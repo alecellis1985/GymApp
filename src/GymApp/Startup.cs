@@ -34,7 +34,7 @@ namespace GymApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_config);
-            services.AddDbContext<GymContext>();
+
             if (_env.IsEnvironment("Development"))
             {
                 //crea la clase debugMail service cuando la precisa y la puede mantener cacheada
@@ -47,17 +47,29 @@ namespace GymApp
             {
                 //implement real mail service
             }
-
+            services.AddDbContext<GymContext>();
+            services.AddScoped<IGymRepository, GymRepository>();
+            services.AddTransient<GymContextSeedData>();
+            services.AddLogging();
             services.AddMvc();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+            ILoggerFactory loggerFactory, GymContextSeedData seeder, ILoggerFactory factory)
         {
+
+
             if (env.IsEnvironment("Development"))
             {
                 app.UseDeveloperExceptionPage();
+                factory.AddDebug(LogLevel.Information);
+
+            }
+            else
+            {
+                factory.AddDebug(LogLevel.Error);
             }
 
             //first try see if index file exists files from wwwroot
@@ -76,6 +88,8 @@ namespace GymApp
                 );
             });
 
+
+            seeder.EnsureSeedData().Wait();
             /*
             loggerFactory.AddConsole();
 

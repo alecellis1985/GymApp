@@ -8,6 +8,7 @@ using GymApp.Services;
 using GymApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace GymApp.Controllers.Web
 {
@@ -15,17 +16,29 @@ namespace GymApp.Controllers.Web
     {
         private readonly IMailService _mailService;
         private readonly IConfigurationRoot _config;
-        private GymContext _context;
+        private readonly IGymRepository _repository;
+        private readonly ILogger<AppController> _logger;
 
-        public AppController(IMailService mailService, IConfigurationRoot config, GymContext context)
+        public AppController(IMailService mailService, IConfigurationRoot config, IGymRepository repository, ILogger<AppController> logger)
         {
             _mailService = mailService;
             _config = config;
-            _context = context;
+            _repository = repository;
+            _logger = logger;
         }
         public IActionResult Index()
         {
-            return View();
+            try
+            {
+                var data = _repository.GetAllPlans();
+
+                return View(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to get Plans in Index page:{ex.Message}");
+                return Redirect("/error");
+            }
         }
 
         public IActionResult Contact()
