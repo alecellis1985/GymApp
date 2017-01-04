@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{90E62EA2-8E7B-493C-8BD9-492020CEFE5B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A73366A0-F5E7-4D93-B909-4B266959D39C}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GymApp", "src\GymApp\GymApp.xproj", "{7067A99B-56CD-4B57-BA02-DC73800E2D39}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7067A99B-56CD-4B57-BA02-DC73800E2D39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7067A99B-56CD-4B57-BA02-DC73800E2D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7067A99B-56CD-4B57-BA02-DC73800E2D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7067A99B-56CD-4B57-BA02-DC73800E2D39}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7067A99B-56CD-4B57-BA02-DC73800E2D39} = {90E62EA2-8E7B-493C-8BD9-492020CEFE5B}
+	EndGlobalSection
+EndGlobal
