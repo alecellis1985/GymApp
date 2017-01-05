@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using GymApp.Models;
 using GymApp.Services;
+using GymApp.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 
 namespace GymApp
 {
@@ -51,7 +54,10 @@ namespace GymApp
             services.AddScoped<IGymRepository, GymRepository>();
             services.AddTransient<GymContextSeedData>();
             services.AddLogging();
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(config =>
+            {
+                config.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
 
         }
 
@@ -59,7 +65,11 @@ namespace GymApp
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
             ILoggerFactory loggerFactory, GymContextSeedData seeder, ILoggerFactory factory)
         {
-
+            Mapper.Initialize(config =>
+            {
+                //Reverse map creates map both ways
+                config.CreateMap<PlanViewModel, Plan>().ReverseMap();
+            });
 
             if (env.IsEnvironment("Development"))
             {

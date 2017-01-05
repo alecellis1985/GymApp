@@ -25,5 +25,16 @@ namespace GymApp.Models
             _logger.LogInformation("Get All Plans and Workouts");
             return _context.Plans.Include(x => x.Workouts).ToList();
         }
+
+        public void AddPlan(Plan plan)
+        {
+            _context.Plans.Add(plan);
+            _logger.LogInformation("Plan was added");
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return (await _context.SaveChangesAsync()) > 0;
+        }
     }
 }
