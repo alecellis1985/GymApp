@@ -36,5 +36,26 @@ namespace GymApp.Models
         {
             return (await _context.SaveChangesAsync()) > 0;
         }
+
+        public Plan GetPlanWorkouts(int planId)
+        {
+            return _context.Plans.Where(x => x.Id == planId)
+                .Include(x => x.Workouts).FirstOrDefault();
+        }
+
+        public void AddWorkout(int planId, Workout workout)
+        {
+            var plan = GetPlanWorkouts(planId);
+            if (plan != null)
+            {
+                plan.Workouts.Add(workout);//foreign key is being set
+                _context.Workouts.Add(workout);//here it's being added as a new obj
+            }
+        }
+
+        public void AddWorkouts(int planId, List<Workout> workouts)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

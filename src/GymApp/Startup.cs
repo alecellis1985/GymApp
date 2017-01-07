@@ -69,6 +69,7 @@ namespace GymApp
             {
                 //Reverse map creates map both ways
                 config.CreateMap<PlanViewModel, Plan>().ReverseMap();
+                config.CreateMap<WorkoutViewModel, Workout>().ReverseMap();
             });
 
             if (env.IsEnvironment("Development"))
