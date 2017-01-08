@@ -1,0 +1,42 @@
+﻿@model System.Collections.Generic.IEnumerable<GymApp.Models.Plan>
+
+@{
+    ViewBag.Title = "Plans";
+    Layout = "_Layout";
+}
+
+<div class="col-xs-12">
+    <h1>Plan</h1>
+    @foreach (var plan in Model)
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>@plan.Name</th>
+                    <th>Series</th>
+                    <th>Reps</th>
+                    @for (var i = 1; i <= plan.DaysDuration; i++)
+                    {
+                        <th>@i</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var workout in plan.Workouts)
+                {
+                    <tr>
+                        <td>
+                            @workout.Name
+                        </td>
+                        <td>@workout.Series</td>
+                        <td>@workout.Reps</td>
+                        @for (var i = 1; i <= plan.DaysDuration; i++)
+                        {
+                            <td>&nbsp;</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

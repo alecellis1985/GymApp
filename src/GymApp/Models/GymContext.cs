@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace GymApp.Models
 {
-    public class GymContext : DbContext
+    public class GymContext : IdentityDbContext<GymUser>
     {
         private readonly IConfigurationRoot _config;
 

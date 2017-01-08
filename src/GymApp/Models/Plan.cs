@@ -11,6 +11,7 @@ namespace GymApp.Models
         public string Name { get; set; }
         public bool Private { get; set; }
         public int DaysDuration { get; set; }
+        public string UserName { get; set; }
         public ICollection<Workout> Workouts { get; set; }
     }
 }

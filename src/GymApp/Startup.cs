@@ -6,9 +6,12 @@ using AutoMapper;
 using GymApp.Models;
 using GymApp.Services;
 using GymApp.ViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -50,11 +53,42 @@ namespace GymApp
             {
                 //implement real mail service
             }
+
+
+            services.AddIdentity<GymUser, IdentityRole>(config =>
+            {
+                config.User.RequireUniqueEmail = true;
+                config.Password.RequiredLength = 8;
+                config.Cookies.ApplicationCookie.LoginPath = "/Auth/Login";
+                config.Cookies.ApplicationCookie.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = async ctx =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 401;
+                        }
+                        else
+                        {
+                            ctx.Response.Redirect(ctx.RedirectUri);
+                        }
+                        await Task.Yield();
+                    }
+                };
+            }).AddEntityFrameworkStores<GymContext>();
+
+
             services.AddDbContext<GymContext>();
             services.AddScoped<IGymRepository, GymRepository>();
             services.AddTransient<GymContextSeedData>();
             services.AddLogging();
-            services.AddMvc().AddJsonOptions(config =>
+            services.AddMvc(config =>
+            {
+                if (_env.IsProduction())
+                {
+                    config.Filters.Add(new RequireHttpsAttribute());
+                }
+            }).AddJsonOptions(config =>
             {
                 config.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
@@ -71,6 +105,8 @@ namespace GymApp
                 config.CreateMap<PlanViewModel, Plan>().ReverseMap();
                 config.CreateMap<WorkoutViewModel, Workout>().ReverseMap();
             });
+
+
 
             if (env.IsEnvironment("Development"))
             {
@@ -89,6 +125,7 @@ namespace GymApp
             //With this we can serve files from wwwroot
             app.UseStaticFiles();
 
+            app.UseIdentity();
 
             app.UseMvc(config =>
             {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GymApp.Models;
 using GymApp.Services;
 using GymApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -27,6 +28,12 @@ namespace GymApp.Controllers.Web
             _logger = logger;
         }
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult Plans()
         {
             try
             {

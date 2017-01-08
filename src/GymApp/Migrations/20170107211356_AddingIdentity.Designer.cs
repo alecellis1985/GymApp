@@ -8,9 +8,10 @@ using GymApp.Models;
 namespace GymApp.Migrations
 {
     [DbContext(typeof(GymContext))]
-    partial class GymContextModelSnapshot : ModelSnapshot
+    [Migration("20170107211356_AddingIdentity")]
+    partial class AddingIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -75,8 +76,6 @@ namespace GymApp.Migrations
                     b.Property<string>("Name");
 
                     b.Property<bool>("Private");
-
-                    b.Property<string>("UserName");
 
                     b.HasKey("Id");
 

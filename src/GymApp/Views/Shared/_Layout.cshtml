@@ -14,8 +14,12 @@
 </head>
 <body>
     <div id="sidebar">
-        <img src="~/img/images.jpg" alt="username" />
-        <span id="username">Alec Ellis</span>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <img src="~/img/images.jpg" alt="username" />
+            <span id="username">@User.Identity.Name</span>
+        }
+
         <ul class="nav">
             <li class="active">
                 <a asp-controller="App" asp-action="Index">Index</a>
@@ -26,6 +30,15 @@
             <li>
                 <a asp-controller="App" asp-action="About">About</a>
             </li>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <li>
+                    <a asp-controller="App" asp-action="Plans">Plans</a>
+                </li>
+                <li>
+                    <a asp-controller="Auth" asp-action="Logout">Logout</a>
+                </li>
+            }
         </ul>
     </div>
     <div id="wrapper">

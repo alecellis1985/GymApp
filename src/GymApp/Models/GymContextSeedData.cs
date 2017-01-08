@@ -5,26 +5,48 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GymApp.Models.Enums;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace GymApp.Models
 {
     public class GymContextSeedData
     {
-        private GymContext _context;
+        private readonly GymContext _context;
+        private readonly UserManager<GymUser> _userManager;
+        private readonly ILogger<GymContextSeedData> _logger;
 
-        public GymContextSeedData(GymContext context)
+        public GymContextSeedData(GymContext context, UserManager<GymUser> userManager, ILogger<GymContextSeedData> logger)
         {
             _context = context;
+            _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task EnsureSeedData()
         {
+            if (await _userManager.FindByEmailAsync("alecellis1985@gmail.com") == null)
+            {
+                var user = new GymUser()
+                {
+                    UserName = "alec",
+                    Email = "alecellis1985@gmail.com"
+                };
+                var result = await _userManager.CreateAsync(user, "P@ssw0rd!");
+                if (!result.Succeeded)
+                {
+                    _logger.LogInformation("Could not insert ASPNET USER");
+                }
+            }
+
+
             if (!_context.Plans.Any())
             {
                 var plan = new Plan()
                 {
                     DaysDuration = 30,
                     Name = "Pecho",
+                    UserName = "alecellis1985@gmail.com",
                     Private = false,
                     Workouts = new List<Workout>()
                     {
@@ -59,6 +81,7 @@ namespace GymApp.Models
                 {
                     DaysDuration = 20,
                     Name = "Triceps",
+                    UserName = "alecellis1985@gmail.com",
                     Private = false,
                     Workouts = new List<Workout>()
                     {

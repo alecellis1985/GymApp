@@ -6,16 +6,18 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GymApp.Models;
 using GymApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace GymApp.Controllers.Api
 {
     [Route("api/plans")]
+    [Authorize]
     public class PlansController : Controller
     {
         private readonly IGymRepository _repository;
-        private ILogger<PlansController> _logger;
+        private readonly ILogger<PlansController> _logger;
 
 
         public PlansController(IGymRepository repository, ILogger<PlansController> logger)
@@ -25,6 +27,22 @@ namespace GymApp.Controllers.Api
         }
         [HttpGet("")]
         public IActionResult Get()
+        {
+            try
+            {
+                var results = _repository.GetPlansByUsername(this.User.Identity.Name);
+
+                return Ok(Mapper.Map<IEnumerable<PlanViewModel>>(results));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get plans:{0}", ex);
+            }
+            return BadRequest("Error ocurred");
+        }
+
+        [HttpGet("all")]
+        public IActionResult GetAllPlans()
         {
             try
             {
@@ -47,6 +65,7 @@ namespace GymApp.Controllers.Api
                 if (ModelState.IsValid)
                 {
                     var newPlan = Mapper.Map<Plan>(plan);
+                    newPlan.UserName = this.User.Identity.Name;
                     _repository.AddPlan(newPlan);
 
                     if (await _repository.SaveChangesAsync())

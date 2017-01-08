@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using GymApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GymApp.Controllers.Api
 {
     [Route("api/plans/{planId}/workouts")]
+    [Authorize]
     public class WorkoutController : Controller
     {
         private readonly ILogger<WorkoutController> _logger;
@@ -55,7 +57,7 @@ namespace GymApp.Controllers.Api
                 {
                     var newWorkout = Mapper.Map<Workout>(model);
 
-                    _repository.AddWorkout(planId, newWorkout);
+                    _repository.AddWorkout(this.User.Identity.Name, planId, newWorkout);
 
                     if (await _repository.SaveChangesAsync())
                     {
